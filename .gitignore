@@ -1,0 +1,14 @@
+*.pyc
+.coverage
+htmlcov
+.tox
+MANIFEST
+*.egg-info
+
+demo.py
+playground.py
+
+.idea/
+.pytest_cache
+
+__pycache__/
