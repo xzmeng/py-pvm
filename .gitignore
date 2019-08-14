@@ -5,7 +5,6 @@ htmlcov
 MANIFEST
 *.egg-info
 
-demo.py
 playground.py
 
 .idea/
