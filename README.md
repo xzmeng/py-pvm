@@ -21,8 +21,9 @@ python -m pvm demo.py
 ```
 
 Comfirm all test cases are passed
-```python
-pytest
+```bash
+coverage run -m pytest
+coverage report
 ```
 
 ## Support
