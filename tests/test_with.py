@@ -1,4 +1,4 @@
-"""Test the with statement for Byterun."""
+"""Test the with statement for pvm."""
 
 from __future__ import print_function
 from . import vmtest

@@ -131,10 +131,9 @@ def run_python_file(filename, args, package=None):
         if not source or source[-1] != '\n':
             source += '\n'
         code = compile(source, filename, "exec")
-        print(code.co_code)
 
         # Execute the source file.
-        # exec_code_object(code, main_mod.__dict__)
+        exec_code_object(code, main_mod.__dict__)
     finally:
         # Restore the old __main__
         sys.modules['__main__'] = old_main_mod

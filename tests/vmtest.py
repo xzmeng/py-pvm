@@ -14,7 +14,7 @@ from pvm.vm import VirtualMachine, VirtualMachineError
 
 # Make this false if you need to run the debugger inside a test.
 CAPTURE_STDOUT = ('-s' not in sys.argv)
-# Make this false to see the traceback from a failure inside pyvm2.
+# Make this false to see the traceback from a failure inside pvm.
 CAPTURE_EXCEPTION = 1
 
 

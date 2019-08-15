@@ -1,4 +1,10 @@
 from __future__ import print_function, division
+
+from .frame import Frame, Block
+from .function import Function, Method
+from .generator import Generator
+from .exceptions import VirtualMachineError
+
 import dis
 import linecache
 import logging
@@ -10,12 +16,6 @@ from six.moves import reprlib
 
 PY3, PY2 = six.PY3, not six.PY3
 
-# from ._pyobj import Frame, Block, Method, Function, Generator
-from .frame import Frame, Block
-from .function import Function, Method
-from .generator import Generator
-from .exceptions import VirtualMachineError
-
 log = logging.getLogger(__name__)
 
 if six.PY3:
@@ -25,9 +25,8 @@ else:
 
 # Create a repr that won't overflow.
 repr_obj = reprlib.Repr()
-repr_obj.maxother = 120
+repr_obj.maxother = 100
 repper = repr_obj.repr
-
 
 
 class VirtualMachine(object):
@@ -50,7 +49,7 @@ class VirtualMachine(object):
         instead.
 
         """
-        return self.frame.stack.pop(-1-i)
+        return self.frame.stack.pop(-1 - i)
 
     def push(self, *vals):
         """Push values onto the value stack."""
@@ -139,9 +138,9 @@ class VirtualMachine(object):
         frame = self.make_frame(code, f_globals=f_globals, f_locals=f_locals)
         val = self.run_frame(frame)
         # Check some invariants
-        if self.frames:            # pragma: no cover
+        if self.frames:  # pragma: no cover
             raise VirtualMachineError("Frames left over!")
-        if self.frame and self.frame.stack:             # pragma: no cover
+        if self.frame and self.frame.stack:  # pragma: no cover
             raise VirtualMachineError("Data left on stack! %r" % self.frame.stack)
 
         return val
@@ -170,7 +169,7 @@ class VirtualMachine(object):
         arg = None
         arguments = []
         if byteCode >= dis.HAVE_ARGUMENT:
-            arg = f.f_code.co_code[f.f_lasti:f.f_lasti+2]
+            arg = f.f_code.co_code[f.f_lasti:f.f_lasti + 2]
             f.f_lasti += 2
             intArg = byteint(arg[0]) + (byteint(arg[1]) << 8)
             if byteCode in dis.hasconst:
@@ -200,7 +199,7 @@ class VirtualMachine(object):
         op = "%d: %s" % (opoffset, byteName)
         if arguments:
             op += " %r" % (arguments[0],)
-        indent = "    "*(len(self.frames)-1)
+        indent = "    " * (len(self.frames) - 1)
         stack_rep = repper(self.frame.stack)
         block_stack_rep = repper(self.frame.block_stack)
 
@@ -224,7 +223,7 @@ class VirtualMachine(object):
             else:
                 # dispatch
                 bytecode_fn = getattr(self, 'byte_%s' % byteName, None)
-                if not bytecode_fn:            # pragma: no cover
+                if not bytecode_fn:  # pragma: no cover
                     raise VirtualMachineError(
                         "unknown bytecode type: %s" % byteName
                     )
@@ -260,9 +259,9 @@ class VirtualMachine(object):
 
         if PY2:
             if (
-                block.type == 'finally' or
-                (block.type == 'setup-except' and why == 'exception') or
-                block.type == 'with'
+                    block.type == 'finally' or
+                    (block.type == 'setup-except' and why == 'exception') or
+                    block.type == 'with'
             ):
                 if why == 'exception':
                     exctype, value, tb = self.last_exception
@@ -278,8 +277,8 @@ class VirtualMachine(object):
 
         elif PY3:
             if (
-                why == 'exception' and
-                block.type in ['setup-except', 'finally']
+                    why == 'exception' and
+                    block.type in ['setup-except', 'finally']
             ):
                 self.push_block('except-handler')
                 exctype, value, tb = self.last_exception
@@ -300,7 +299,6 @@ class VirtualMachine(object):
                 return why
 
         return why
-
 
     def run_frame(self, frame):
         """Run a frame until it returns (somehow).
@@ -437,9 +435,9 @@ class VirtualMachine(object):
     UNARY_OPERATORS = {
         'POSITIVE': operator.pos,
         'NEGATIVE': operator.neg,
-        'NOT':      operator.not_,
-        'CONVERT':  repr,
-        'INVERT':   operator.invert,
+        'NOT': operator.not_,
+        'CONVERT': repr,
+        'INVERT': operator.invert,
     }
 
     def unaryOperator(self, op):
@@ -447,20 +445,20 @@ class VirtualMachine(object):
         self.push(self.UNARY_OPERATORS[op](x))
 
     BINARY_OPERATORS = {
-        'POWER':    pow,
+        'POWER': pow,
         'MULTIPLY': operator.mul,
-        'DIVIDE':   getattr(operator, 'div', lambda x, y: None),
+        'DIVIDE': getattr(operator, 'div', lambda x, y: None),
         'FLOOR_DIVIDE': operator.floordiv,
-        'TRUE_DIVIDE':  operator.truediv,
-        'MODULO':   operator.mod,
-        'ADD':      operator.add,
+        'TRUE_DIVIDE': operator.truediv,
+        'MODULO': operator.mod,
+        'ADD': operator.add,
         'SUBTRACT': operator.sub,
-        'SUBSCR':   operator.getitem,
-        'LSHIFT':   operator.lshift,
-        'RSHIFT':   operator.rshift,
-        'AND':      operator.and_,
-        'XOR':      operator.xor,
-        'OR':       operator.or_,
+        'SUBSCR': operator.getitem,
+        'LSHIFT': operator.lshift,
+        'RSHIFT': operator.rshift,
+        'AND': operator.and_,
+        'XOR': operator.xor,
+        'OR': operator.or_,
     }
 
     def binaryOperator(self, op):
@@ -493,13 +491,13 @@ class VirtualMachine(object):
             x ^= y
         elif op == 'OR':
             x |= y
-        else:           # pragma: no cover
+        else:  # pragma: no cover
             raise VirtualMachineError("Unknown in-place operator: %r" % op)
         self.push(x)
 
     def sliceOperator(self, op):
         start = 0
-        end = None          # we will take this to mean end
+        end = None  # we will take this to mean end
         op, count = op[:-2], int(op[-1])
         if count == 1:
             start = self.pop()
@@ -595,7 +593,7 @@ class VirtualMachine(object):
         elif count == 3:
             x, y, z = self.popn(3)
             self.push(slice(x, y, z))
-        else:           # pragma: no cover
+        else:  # pragma: no cover
             raise VirtualMachineError("Strange BUILD_SLICE count: %r" % count)
 
     def byte_LIST_APPEND(self, count):
@@ -615,7 +613,7 @@ class VirtualMachine(object):
 
     ## Printing
 
-    if 0:   # Only used in the interactive interpreter, not in modules.
+    if 0:  # Only used in the interactive interpreter, not in modules.
         def byte_PRINT_EXPR(self):
             print(self.pop())
 
@@ -662,7 +660,7 @@ class VirtualMachine(object):
     def byte_JUMP_ABSOLUTE(self, jump):
         self.jump(jump)
 
-    if 0:   # Not in py2.7
+    if 0:  # Not in py2.7
         def byte_JUMP_IF_TRUE(self, jump):
             val = self.top()
             if val:
@@ -739,7 +737,7 @@ class VirtualMachine(object):
             why = v
             if why in ('return', 'continue'):
                 self.return_value = self.pop()
-            if why == 'silenced':       # PY3
+            if why == 'silenced':  # PY3
                 block = self.pop_block()
                 assert block.type == 'except-handler'
                 self.unwind_block(block)
@@ -752,7 +750,7 @@ class VirtualMachine(object):
             tb = self.pop()
             self.last_exception = (exctype, val, tb)
             why = 'reraise'
-        else:       # pragma: no cover
+        else:  # pragma: no cover
             raise VirtualMachineError("Confused END_FINALLY")
         return why
 
@@ -799,23 +797,23 @@ class VirtualMachine(object):
             return self.do_raise(exc, cause)
 
         def do_raise(self, exc, cause):
-            if exc is None:         # reraise
+            if exc is None:  # reraise
                 exc_type, val, tb = self.last_exception
                 if exc_type is None:
-                    return 'exception'      # error
+                    return 'exception'  # error
                 else:
                     return 'reraise'
 
             elif type(exc) == type:
                 # As in `raise ValueError`
                 exc_type = exc
-                val = exc()             # Make an instance.
+                val = exc()  # Make an instance.
             elif isinstance(exc, BaseException):
                 # As in `raise ValueError('foo')`
                 exc_type = type(exc)
                 val = exc
             else:
-                return 'exception'      # error
+                return 'exception'  # error
 
             # If you reach this point, you're guaranteed that
             # val is a valid exception instance and exc_type is its class.
@@ -875,8 +873,8 @@ class VirtualMachine(object):
                 self.push(w, v, u)
                 block = self.pop_block()
                 assert block.type == 'except-handler'
-                self.push_block(block.type, block.handler, block.level-1)
-        else:       # pragma: no cover
+                self.push_block(block.type, block.handler, block.level - 1)
+        else:  # pragma: no cover
             raise VirtualMachineError("Confused WITH_CLEANUP")
         exit_ret = exit_func(u, v, w)
         err = (u is not None) and bool(exit_ret)
@@ -1033,6 +1031,6 @@ class VirtualMachine(object):
         def byte_STORE_LOCALS(self):
             self.frame.f_locals = self.pop()
 
-    if 0:   # Not in py2.7
+    if 0:  # Not in py2.7
         def byte_SET_LINENO(self, lineno):
             self.frame.f_lineno = lineno
