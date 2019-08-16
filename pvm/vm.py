@@ -613,10 +613,6 @@ class VirtualMachine(object):
 
     ## Printing
 
-    if 0:  # Only used in the interactive interpreter, not in modules.
-        def byte_PRINT_EXPR(self):
-            print(self.pop())
-
     def byte_PRINT_ITEM(self):
         item = self.pop()
         self.print_item(item)
@@ -659,17 +655,6 @@ class VirtualMachine(object):
 
     def byte_JUMP_ABSOLUTE(self, jump):
         self.jump(jump)
-
-    if 0:  # Not in py2.7
-        def byte_JUMP_IF_TRUE(self, jump):
-            val = self.top()
-            if val:
-                self.jump(jump)
-
-        def byte_JUMP_IF_FALSE(self, jump):
-            val = self.top()
-            if not val:
-                self.jump(jump)
 
     def byte_POP_JUMP_IF_TRUE(self, jump):
         val = self.pop()
@@ -1011,8 +996,6 @@ class VirtualMachine(object):
         mod = self.top()
         self.push(getattr(mod, name))
 
-    ## And the rest...
-
     def byte_EXEC_STMT(self):
         stmt, globs, locs = self.popn(3)
         six.exec_(stmt, globs, locs)
@@ -1030,7 +1013,3 @@ class VirtualMachine(object):
 
         def byte_STORE_LOCALS(self):
             self.frame.f_locals = self.pop()
-
-    if 0:  # Not in py2.7
-        def byte_SET_LINENO(self, lineno):
-            self.frame.f_lineno = lineno
