@@ -21,7 +21,7 @@ class Frame(object):
                 if hasattr(self.f_builtins, '__dict__'):
                     self.f_builtins = self.f_builtins.__dict__
             except KeyError:
-                # No builtins! Make up a minimal one with None.
+                # No builtins, Make up a minimal one with None.
                 self.f_builtins = {'None': None}
 
         self.f_lineno = f_code.co_firstlineno

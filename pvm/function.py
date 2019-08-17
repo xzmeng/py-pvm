@@ -59,10 +59,6 @@ class Function(object):
 
     def __call__(self, *args, **kwargs):
         if PY2 and self.func_name in ["<setcomp>", "<dictcomp>", "<genexpr>"]:
-            # http://bugs.python.org/issue19611 Py2 doesn't know how to
-            # inspect set comprehensions, dict comprehensions, or generator
-            # expressions properly.  They are always functions of one argument,
-            # so just do the right thing.
             assert len(args) == 1 and not kwargs, "Surprising comprehension!"
             callargs = {".0": args[0]}
         else:

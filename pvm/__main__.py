@@ -8,10 +8,6 @@ parser = argparse.ArgumentParser(
     description="Run Python programs with a Python bytecode interpreter.",
 )
 parser.add_argument(
-    '-m', dest='module', action='store_true',
-    help="prog is a module name, not a file name.",
-)
-parser.add_argument(
     '-v', '--verbose', dest='verbose', action='store_true',
     help="trace the execution of the bytecode.",
 )
@@ -25,10 +21,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-if args.module:
-    run_fn = run.run_python_module
-else:
-    run_fn = run.run_python_file
+run_fn = run.run_python_file
 
 level = logging.DEBUG if args.verbose else logging.WARNING
 logging.basicConfig(level=level)
