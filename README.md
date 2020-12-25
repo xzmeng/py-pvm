@@ -1,5 +1,5 @@
 # CPython 2.7 Bytecode Interpreter written in Python
-
+This repo is an imitation of nedbat's [byterun](https://github.com/nedbat/byterun/).
 ## CPython Workflow
 
 1. Lexical Analysis -> tokens
@@ -31,3 +31,11 @@ coverage report
 - Python 2.7 is compelely supported
 - Python 3.5 has a limited support
 - Don't support Python 3.6 and above
+
+## References
+1. https://github.com/nedbat/byterun/
+2. https://pg.ucsd.edu/cpython-internals.htm
+3. https://docs.python.org/2.7/library/dis.html
+4. https://www.aosabook.org/en/500L/a-python-interpreter-written-in-python.html
+5. http://qingyunha.github.io/taotao/
+6. Python源码剖析(陈儒 2008)
